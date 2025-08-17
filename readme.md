@@ -175,8 +175,7 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - Built with Express.js and MongoDB
-- Styled with Tailwind CSS
-- Icons from various icon libraries
+- Icons from [Font Awesome](https://fontawesome.com/) icon libraries
 
 ## 📞 Support
 
