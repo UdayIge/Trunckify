@@ -138,8 +138,6 @@ The server will start at `http://localhost:3000`
 - **Analytics Display**: Visual representation of URL performance
 - **Modern UI**: Clean, intuitive user interface
 
-## Demo
-
 <img width="1360" height="762" alt="Hero" src="https://github.com/user-attachments/assets/9f5463f8-ba93-417a-b990-210a916783de" />
 
 ## 🚀 Development
