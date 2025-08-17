@@ -33,8 +33,8 @@ Before running this project, make sure you have:
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
-   cd 06-mongodb
+   git clone https://github.com/UdayIge/Trunckify.git
+   cd Trunckify
    ```
 
 2. **Install dependencies**
@@ -137,6 +137,10 @@ The server will start at `http://localhost:3000`
 - **User Dashboard**: Manage and view all shortened URLs
 - **Analytics Display**: Visual representation of URL performance
 - **Modern UI**: Clean, intuitive user interface
+
+## Demo
+
+<img width="1360" height="762" alt="Hero" src="https://github.com/user-attachments/assets/9f5463f8-ba93-417a-b990-210a916783de" />
 
 ## 🚀 Development
 
