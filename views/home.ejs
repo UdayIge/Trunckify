@@ -49,19 +49,6 @@
                 radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
-            animation: gradientShift 5s ease-in-out infinite alternate;
-        }
-
-        @keyframes gradientShift {
-            0% {
-                transform: rotate(0deg) scale(1);
-                opacity: 0.8;
-            }
-
-            100% {
-                transform: rotate(3deg) scale(1.1);
-                opacity: 1;
-            }
         }
 
         .container {
@@ -79,7 +66,7 @@
         }
 
         .header h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -90,7 +77,7 @@
         }
 
         .header p {
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: var(--text-secondary);
             max-width: 600px;
             margin: 0 auto;
@@ -103,7 +90,7 @@
             border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
             text-align: center;
             animation: slideInUp 0.6s ease-out;
             box-shadow: var(--shadow);
@@ -112,7 +99,7 @@
         .success-message h3 {
             color: #4ade80;
             margin-bottom: 1rem;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
 
         .generated-url {
@@ -144,7 +131,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.096), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             transition: left 0.6s ease;
         }
 
@@ -161,7 +148,7 @@
         .copy-btn {
             background: var(--success-gradient);
             border: none;
-            padding: 1rem 1.5rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 12px;
             color: white;
             cursor: pointer;
@@ -487,7 +474,6 @@
             <p>Transform your long URLs into short, shareable links instantly. Fast, secure, and completely free.</p>
         </header>
 
-        <!-- Success Message -->
         <% if (locals.shortId) { %>
             <div class="success-message">
                 <h3><i class="fas fa-check-circle"></i> Success! Your URL has been shortened</h3>
@@ -502,143 +488,88 @@
                     </button>
                 </div>
             </div>
+        <% } %>
+        <div class="url-form">
+            <form action="/url" method="POST" id="urlForm">
+                <div class="form-group">
+                    <label for="url">
+                        <i class="fas fa-globe"></i>
+                        Enter your long URL
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="url" name="url" id="url"
+                            placeholder="https://example.com/very/long/url/path" required pattern="https?://.+"
+                            title="Please enter a valid URL starting with http:// or https://">
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">
+                        <i class="fas fa-magic"></i>
+                        Shorten URL
+                    </span>
+                    <div class="loading-spinner"></div>
+                </button>
+            </form>
+        </div>
+
+        <div class="urls-section">
+            <% if (locals.urls && locals.urls.length> 0) { %>
+                <h2 class="section-title">
+                    <i class="fas fa-list"></i>
+                    Your Shortened URLs
+                </h2>
+                <div class="urls-table">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-hashtag"></i></th>
+                                    <th><i class="fas fa-link"></i> Original URL</th>
+                                    <th><i class="fas fa-external-link-alt"></i> Action</th>
+                                    <th><i class="fas fa-mouse-pointer"></i> Clicks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% urls.forEach((url, index)=> { %>
+                                    <tr>
+                                        <td><strong>
+                                                <%= index + 1 %>
+                                            </strong></td>
+                                        <td class="url-cell">
+                                            <%= url.originalUrl %>
+                                        </td>
+                                        <td>
+                                            <a href="http://localhost:5000/url/<%= url.shortId %>"
+                                                target="_blank" class="redirect-btn">
+                                                <i class="fas fa-external-link-alt"></i>
+                                                Visit
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span class="clicks-badge">
+                                                <i class="fas fa-eye"></i>
+                                                <%= url.visitedHistory.length %>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            <% } else if (locals.urls && locals.urls.length===0) { %>
+                <div class="urls-table">
+                    <div class="empty-state">
+                        <i class="fas fa-link"></i>
+                        <h3>No URLs Yet</h3>
+                        <p>Start by shortening your first URL above!</p>
+                    </div>
+                </div>
             <% } %>
-
-                <!-- URL Form -->
-                <div class="url-form">
-                    <form action="/url" method="POST" id="urlForm">
-                        <div class="form-group">
-                            <label for="url">
-                                <i class="fas fa-globe"></i>
-                                Enter your long URL
-                            </label>
-                            <div class="input-wrapper">
-                                <input type="url" name="url" id="url"
-                                    placeholder="https://example.com/very/long/url/path" required pattern="https?://.+"
-                                    title="Please enter a valid URL starting with http:// or https://">
-                            </div>
-                        </div>
-                        <button type="submit" class="submit-btn" id="submitBtn">
-                            <span class="btn-text">
-                                <i class="fas fa-magic"></i>
-                                Shorten URL
-                            </span>
-                            <div class="loading-spinner"></div>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- URLs Table Section -->
-                <div class="urls-section">
-                    <% if (locals.urls && locals.urls.length> 0) { %>
-                        <h2 class="section-title">
-                            <i class="fas fa-list"></i>
-                            Your Shortened URLs
-                        </h2>
-                        <div class="urls-table">
-                            <div class="table-responsive">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th><i class="fas fa-hashtag"></i></th>
-                                            <th><i class="fas fa-link"></i> Shorten URL</th>
-                                            <th><i class="fas fa-external-link-alt"></i> Action</th>
-                                            <th><i class="fas fa-mouse-pointer"></i> Clicks</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% urls.forEach((url, index)=> { %>
-                                            <tr>
-                                                <td><strong>
-                                                        <%= index + 1 %>
-                                                    </strong></td>
-                                                <td class="url-cell">
-                                                    http://localhost:5000/url/<%= url.shortId %>
-                                                </td>
-                                                <td>
-                                                    <a href="http://localhost:5000/url/<%= url.shortId %>" target="_blank"
-                                                        class="redirect-btn">
-                                                        <i class="fas fa-external-link-alt"></i>
-                                                        Visit
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    <span class="clicks-badge">
-                                                        <i class="fas fa-eye"></i>
-                                                        <%= url.visitedHistory.length %>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                            <% }) %>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <% } else if (locals.urls && locals.urls.length===0) { %>
-                            <div class="urls-table">
-                                <div class="empty-state">
-                                    <i class="fas fa-link"></i>
-                                    <h3>You don't have any URLs Yet</h3>
-                                    <p>Start by shortening your first URL above!</p>
-                                </div>
-                            </div>
-                        <% } %>
-                </div>
+        </div>
     </div>
 
-    <script>
-        // Copy to clipboard functionality
-        function copyToClipboard() {
-            const urlText = document.getElementById('generatedUrl').textContent;
-            const copyBtn = document.getElementById('copyText');
-
-            navigator.clipboard.writeText(urlText).then(() => {
-                copyBtn.textContent = 'Copied!';
-                setTimeout(() => {
-                    copyBtn.textContent = 'Copy';
-                }, 2000);
-            }).catch(err => {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = urlText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-
-                copyBtn.textContent = 'Copied!';
-                setTimeout(() => {
-                    copyBtn.textContent = 'Copy';
-                }, 2000);
-            });
-        }
-
-        // Form loading state
-        document.getElementById('urlForm').addEventListener('submit', function () {
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.classList.add('loading');
-        });
-
-        // Input validation feedback
-        const urlInput = document.getElementById('url');
-        urlInput.addEventListener('input', function () {
-            if (this.value && !this.value.match(/^https?:\/\/.+/)) {
-                this.setCustomValidity('Please enter a valid URL starting with http:// or https://');
-            } else {
-                this.setCustomValidity('');
-            }
-        });
-
-        // Smooth scroll animation for success message
-        if (document.querySelector('.success-message')) {
-            setTimeout(() => {
-                document.querySelector('.success-message').scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-            }, 500);
-        }
-    </script>
+    <script src="./script/home.js"></script>
 </body>
 
 </html>
