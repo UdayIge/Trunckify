@@ -478,9 +478,9 @@
             <div class="success-message">
                 <h3><i class="fas fa-check-circle"></i> Success! Your URL has been shortened</h3>
                 <div class="generated-url">
-                    <a href="http://localhost:5000/url/<%= locals.shortId %>" target="_blank" class="url-display"
+                    <a href="<%= locals.baseUrl %>/url/<%= locals.shortId %>" target="_blank" class="url-display"
                         id="generatedUrl">
-                        http://localhost:5000/url/<%= locals.shortId %>
+                        `<%= locals.baseUrl %>/url/<%= locals.shortId %>`
                     </a>
                     <button class="copy-btn" onclick="copyToClipboard()">
                         <i class="fas fa-copy"></i>
@@ -539,7 +539,7 @@
                                             <%= url.originalUrl %>
                                         </td>
                                         <td>
-                                            <a href="http://localhost:5000/url/<%= url.shortId %>"
+                                            <a href="<%= locals.baseUrl %>/url/<%= url.shortId %>"
                                                 target="_blank" class="redirect-btn">
                                                 <i class="fas fa-external-link-alt"></i>
                                                 Visit

@@ -4,7 +4,7 @@ import { nanoid } from "nanoid"
 export async function createShortUrl(req, res) {
     const body = req.body;
     if (!body.url) return res.status(400).json({ message: "URL not found" });
-    const id = nanoid(8);
+    const id = nanoid(6);
 
     const url = await Url.create({
         shortId: id,

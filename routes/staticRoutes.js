@@ -5,7 +5,6 @@ const router = Router();
 
 router.get("/", async (req, res) => {
     try {
-        console.log(req.user);
         const urls = await Url.find({ createdBy: req.user?._id });
         const shortId = req.query.shortId;
         return res.status(200).render("home", { urls, shortId });
