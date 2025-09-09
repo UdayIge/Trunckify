@@ -1,20 +1,38 @@
 import mongoose from "mongoose";
 import config from "../config/index.js";
 
-const { mongoURI, dbName } = config;
+const { mongoURI } = config;
 
-if(!mongoURI){
-  throw new Error("MongoDB URI is not defined in the configuration");
+if (!mongoURI) {
+	throw new Error("MongoDB URI is not defined in the configuration");
+}
+
+// Cache the connection across invocations (serverless friendly)
+let cached = globalThis.mongooseCache;
+if (!cached) {
+	cached = globalThis.mongooseCache = { conn: null, promise: null };
 }
 
 async function connectDB() {
-  try {
-    await mongoose.connect(`${mongoURI}/${dbName}`);
-    console.log("MongoDB connected successfully");
-  } catch (error) {
-    console.error("MongoDB connection error:", error);
-    process.exit(1); // Exit the process with failure
-  }
+	if (cached.conn) return cached.conn;
+
+	if (!cached.promise) {
+		cached.promise = mongoose
+			.connect(mongoURI, {
+				bufferCommands: false,
+			})
+			.then((mongooseInstance) => {
+				return mongooseInstance;
+			});
+	}
+
+	try {
+		cached.conn = await cached.promise;
+		return cached.conn;
+	} catch (error) {
+		cached.promise = null;
+		throw error;
+	}
 }
 
 export default connectDB;

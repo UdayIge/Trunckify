@@ -4,9 +4,10 @@ dotenv.config(); // Load environment variables from default .env file or custom 
 
 const config = {
   mongoURI: process.env.MONGO_URL,
-  dbName: process.env.DB_NAME,
   port: process.env.PORT || 5000,
-  baseUrl: process.env.BASE_URL || "http://localhost:5000"
+  baseUrl: process.env.BASE_URL || "http://localhost:5000",
+  jwtSecret: process.env.JWT_SECRET,
+  nodeEnv: process.env.NODE_ENV,
 };
 
 export default config;

@@ -1,6 +1,6 @@
-import { nanoid } from 'nanoid';
 import User from '../model/User.js'
 import { setUser, removeUser } from "../services/auth.js"
+import config from '../config/index.js'
 
 export async function handleUserSignup(req,res) {
     const { name, email, password } = req.body;
@@ -19,13 +19,21 @@ export async function handleUserLogin(req,res) {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: "All fields are required" })
     try {
-        const user = await User.findOne({ email: email , password: password });
+        const user = await User.findOne({ email: email });
         if(!user){
             return res.status(400).redirect("/login?error='Invalid credentials'");
         }
-        const uuid = nanoid();
-        setUser(uuid,user);
-        res.cookie("uuid",uuid);
+        const isMatch = await user.comparePassword(password);
+        if(!isMatch){
+            return res.status(400).redirect("/login?error='Invalid credentials'");
+        }
+        const token = setUser(user);
+        res.cookie("uuid", token, {
+            httpOnly: true,
+            secure: config.nodeEnv === 'production',
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
         return res.status(200).redirect("/");
     }
     catch (err) {
@@ -36,9 +44,8 @@ export async function handleUserLogin(req,res) {
 
 export async function handleUserLogout(req,res) {
     try {
-        const uuid = req.cookies.uuid;
-        removeUser(uuid);
-        res.clearCookie("uuid");
+        const token = req.cookies.uuid;
+        removeUser(res);
         return res.status(200).redirect("/login?error='User logged out successfully'");
     }
     catch (err) {
