@@ -1,13 +1,17 @@
 {
+  "installCommand": "npm install --legacy-peer-deps",
   "version": 2,
-  "functions": {
-    "api/index.js": {
-      "runtime": "nodejs22.x"
+  "builds": [
+    {
+      "src": "/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "views/**/*",
+      "use": "@vercel/static"
     }
-  },
+  ],
   "routes": [
-    { "src": "/(.*)", "dest": "/api/index.js" }
+    { "src": "/(.*)", "dest": "/" }
   ]
 }
-
-
