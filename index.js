@@ -20,6 +20,9 @@ app.use(cookieParser())
 app.set("view engine", "ejs")
 app.set("views", path.resolve("./views"))
 
+// Serve static files from views directory (for JS, CSS, etc.)
+app.use(express.static(path.resolve("./views")))
+
 // Ensure DB connection before handling any request (serverless safe)
 app.use(async (req, res, next) => {
     try {
@@ -40,10 +43,10 @@ app.use("/",checkAuth, staticRoutes);
 app.use("/url", Auth, UrlRoutes);
 app.use("/user", userRoutes);
 
-// Export Express app for Vercel serverless
+
 export default app;
 
-// Optional: Local development server if run directly (not used by Vercel)
+
 if (process.env.VERCEL !== '1') {
     app.listen(port, () => {
         console.log(`Server running on http://localhost:${port}`)

@@ -1,27 +1,61 @@
 // Copy to clipboard functionality
 function copyToClipboard() {
-    const urlText = document.getElementById('generatedUrl').textContent;
+    const urlElement = document.getElementById('generatedUrl');
     const copyBtn = document.getElementById('copyText');
+    
+    if (!urlElement || !copyBtn) {
+        console.error('Copy elements not found');
+        return;
+    }
+    
+    const urlText = urlElement.textContent.trim();
 
-    navigator.clipboard.writeText(urlText).then(() => {
-        copyBtn.textContent = 'Copied!';
-        setTimeout(() => {
-            copyBtn.textContent = 'Copy';
-        }, 2000);
-    }).catch(err => {
-        // Fallback for older browsers
+    // Modern clipboard API
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(urlText).then(() => {
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyBtn.textContent = 'Copy';
+            }, 2000);
+        }).catch(err => {
+            console.error('Clipboard API failed:', err);
+            fallbackCopy(urlText, copyBtn);
+        });
+    } else {
+        // Fallback for older browsers or non-secure contexts
+        fallbackCopy(urlText, copyBtn);
+    }
+}
+
+function fallbackCopy(text, copyBtn) {
+    try {
         const textArea = document.createElement('textarea');
-        textArea.value = urlText;
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
         document.body.appendChild(textArea);
+        textArea.focus();
         textArea.select();
-        document.execCommand('copy');
+        
+        const successful = document.execCommand('copy');
         document.body.removeChild(textArea);
-
-        copyBtn.textContent = 'Copied!';
+        
+        if (successful) {
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyBtn.textContent = 'Copy';
+            }, 2000);
+        } else {
+            throw new Error('Copy command failed');
+        }
+    } catch (err) {
+        console.error('Fallback copy failed:', err);
+        copyBtn.textContent = 'Copy Failed';
         setTimeout(() => {
             copyBtn.textContent = 'Copy';
         }, 2000);
-    });
+    }
 }
 
 // Form loading state
