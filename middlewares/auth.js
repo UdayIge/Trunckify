@@ -11,10 +11,10 @@ export function checkAuth(req,res,next){
 
 export function Auth(req,res,next){
     const uuid = req.cookies.uuid;
-    if (!uuid) return res.status(401).redirect("/login");
+    if (!uuid) return res.status(401).redirect("/signup");
 
     const user = getUser(uuid);
-    if (!user) return res.status(401).redirect("/login");
+    if (!user) return res.status(401).redirect("/signup");
 
     req.user = user;
     next();

@@ -21,11 +21,11 @@ export async function handleUserLogin(req,res) {
     try {
         const user = await User.findOne({ email: email });
         if(!user){
-            return res.status(400).redirect("/login?error='Invalid credentials'");
+            return res.status(400).redirect("/signup?error='Invalid credentials'");
         }
         const isMatch = await user.comparePassword(password);
         if(!isMatch){
-            return res.status(400).redirect("/login?error='Invalid credentials'");
+            return res.status(400).redirect("/signup?error='Invalid credentials'");
         }
         const token = setUser(user);
         res.cookie("uuid", token, {
@@ -46,7 +46,7 @@ export async function handleUserLogout(req,res) {
     try {
         const token = req.cookies.uuid;
         removeUser(res);
-        return res.status(200).redirect("/login?error='User logged out successfully'");
+        return res.status(200).redirect("/signup?error='User logged out successfully'");
     }
     catch (err) {
         console.log("Error in user log-out ", err)
